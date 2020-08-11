@@ -49,6 +49,11 @@ public class Rabbit extends JumpingAnimal {
     public void initEntity() {
         super.initEntity();
         this.setMaxHealth(3);
+        if (this.isBaby()) {
+            this.setScale(0.4f);
+        } else {
+            this.setScale(0.6f);
+        }
     }
 
     @Override
