@@ -61,6 +61,9 @@ public class PolarBear extends WalkingMonster {
         super.initEntity();
         this.setDamage(new float[] { 0, 4, 6, 9 });
         this.setMaxHealth(30);
+        if (this.isBaby()) {
+            this.setScale(0.5f);
+        }
         if (this.namedTag.contains("Angry")) {
             this.angry = this.namedTag.getInt("Angry");
         }
