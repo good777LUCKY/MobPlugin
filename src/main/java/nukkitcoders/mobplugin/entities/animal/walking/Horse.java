@@ -50,6 +50,9 @@ public class Horse extends HorseBase {
     public void initEntity() {
         super.initEntity();
         this.setMaxHealth(15);
+        if (this.isBaby()) {
+            this.setScale(0.5f);
+        }
 
         if (this.namedTag.contains("Variant")) {
             this.variant = this.namedTag.getInt("Variant");
