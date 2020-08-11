@@ -34,6 +34,9 @@ public class Zoglin extends WalkingMonster {
     protected void initEntity() {
         super.initEntity();
         this.setMaxHealth(40);
+        if (this.isBaby()) {
+            this.setScale(0.5f);
+        }
         this.setDamage(new float[]{0, 2, 3, 4});
     }
 
