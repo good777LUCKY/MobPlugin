@@ -54,6 +54,9 @@ public class ZombieVillager extends WalkingMonster implements EntitySmite {
 
         this.setDamage(new float[] { 0, 3, 4, 6 });
         this.setMaxHealth(20);
+        if (this.isBaby()) {
+            this.setScale(0.5f);
+        }
     }
 
     @Override
