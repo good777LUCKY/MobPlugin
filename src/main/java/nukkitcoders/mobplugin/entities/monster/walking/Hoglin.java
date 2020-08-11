@@ -33,7 +33,7 @@ public class Hoglin extends WalkingMonster {
     protected void initEntity() {
         super.initEntity();
         this.setMaxHealth(40);
-        if (this,isBaby()) {
+        if (this.isBaby()) {
             this.setScale(0.5f);
         }
         this.setDamage(new float[]{0, 2, 3, 4});
@@ -41,11 +41,17 @@ public class Hoglin extends WalkingMonster {
 
     @Override
     public float getWidth() {
+        if (this.isBaby()) {
+            return 0.45f;
+        }
         return 0.9f;
     }
 
     @Override
     public float getHeight() {
+        if (this.isBaby()) {
+            return 0.45f;
+        }
         return 0.9f;
     }
 
