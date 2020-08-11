@@ -45,6 +45,10 @@ public class Cat extends WalkingAnimal {
         super.initEntity();
 
         this.setMaxHealth(10);
+        if (this.isBaby()) {
+            this.setScale(0.4f);
+        }
+        this.setScale(0.8f);
     }
 
     @Override
