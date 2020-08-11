@@ -38,6 +38,9 @@ public class Panda extends WalkingAnimal {
         super.initEntity();
 
         this.setMaxHealth(20);
+        if (this.isBaby()) {
+            this.setScale(0.4f);
+        }
     }
 
     @Override
