@@ -32,6 +32,9 @@ public class Turtle extends SwimmingAnimal {
     public void initEntity() {
         super.initEntity();
         this.setMaxHealth(30);
+        if (this.isBaby()) {
+            this.setScale(0.16f);
+        }
     }
 
     @Override
