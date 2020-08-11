@@ -43,6 +43,7 @@ public class WitherSkeleton extends WalkingMonster implements EntitySmite {
 
         this.fireProof = true;
         this.setMaxHealth(20);
+        this.setScale(1.2f);
         this.setDamage(new float[] { 0, 3, 4, 6 });
     }
 
