@@ -38,6 +38,9 @@ public class Squid extends SwimmingAnimal {
         super.initEntity();
 
         this.setMaxHealth(10);
+        if (this.isBaby()) {
+            this.setScale(0.5f);
+        }
     }
 
     @Override
