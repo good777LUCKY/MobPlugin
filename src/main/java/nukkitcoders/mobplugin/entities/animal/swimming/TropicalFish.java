@@ -32,6 +32,7 @@ public class TropicalFish extends SwimmingAnimal {
     public void initEntity() {
         super.initEntity();
         this.setMaxHealth(3);
+        this.setScale(1.3f);
     }
 
     @Override
