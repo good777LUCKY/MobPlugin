@@ -63,6 +63,9 @@ public class Chicken extends WalkingAnimal {
         this.isChickenJockey = this.namedTag.contains("IsChickenJockey") && this.namedTag.getBoolean("IsChickenJockey");
 
         this.setMaxHealth(4);
+        if (this.isBaby()) {
+            this.setScale(0.5f);
+        }
     }
 
     @Override
