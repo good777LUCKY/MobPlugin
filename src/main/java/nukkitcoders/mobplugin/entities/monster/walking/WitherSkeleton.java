@@ -93,7 +93,7 @@ public class WitherSkeleton extends WalkingMonster implements EntitySmite {
         }
         
         if (Utils.rand(1, 200) <= 17) {
-            drops.add(Item.get(Item.STONE_SWORD, 0, 1));
+            drops.add(Item.get(Item.STONE_SWORD, 0, 1).setDamage(Utils.rand(0, 131)));
         }
         
         return drops.toArray(new Item[0]);
