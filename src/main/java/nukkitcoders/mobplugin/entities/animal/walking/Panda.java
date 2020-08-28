@@ -32,15 +32,17 @@ public class Panda extends WalkingAnimal {
     public float getHeight() {
         return 1.25f;
     }
-
+    
+    @Override
+    public float getBabyScale() {
+        return 0.4f;
+    }
+    
     @Override
     public void initEntity() {
         super.initEntity();
 
         this.setMaxHealth(20);
-        if (this.isBaby()) {
-            this.setScale(0.4f);
-        }
     }
 
     @Override
