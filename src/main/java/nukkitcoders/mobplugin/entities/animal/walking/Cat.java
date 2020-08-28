@@ -39,17 +39,22 @@ public class Cat extends WalkingAnimal {
         }
         return 0.7f;
     }
-
+    
+    @Override
+    public float getBabyScale() {
+        return 0.4f;
+    }
+    
+    @Override
+    public float getDefaultScale() {
+        return 0.8f;
+    }
+    
     @Override
     public void initEntity() {
         super.initEntity();
 
         this.setMaxHealth(10);
-        if (this.isBaby()) {
-            this.setScale(0.4f);
-        } else {
-            this.setScale(0.8f);
-        }
     }
 
     @Override
