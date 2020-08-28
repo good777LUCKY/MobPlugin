@@ -33,9 +33,6 @@ public class Fox extends WalkingAnimal {
         super.initEntity();
 
         this.setMaxHealth(20);
-        if (this.isBaby()) {
-            this.setScale(0.5f);
-        }
     }
 
     @Override
