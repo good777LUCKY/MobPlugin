@@ -69,9 +69,6 @@ public class Zombie extends WalkingMonster implements EntityAgeable, EntitySmite
 
         this.setDamage(new float[] { 0, 2, 3, 4 });
         this.setMaxHealth(20);
-        if (this.isBaby()) {
-            this.setScale(0.5f);
-        }
         
         this.armor = getRandomArmor();
 
