@@ -78,9 +78,6 @@ public class Wolf extends TameableMonster {
         }
 
         this.setMaxHealth(8);
-        if (this.isBaby()) {
-            this.setScale(0.5f);
-        }
         this.setDamage(new float[] { 0, 3, 4, 6 });
     }
 
