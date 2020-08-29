@@ -41,7 +41,6 @@ public class Bee extends FlyingAnimal {
     @Override
     public void initEntity() {
         super.initEntity();
-        
         this.setMaxHealth(10);
     }
 
