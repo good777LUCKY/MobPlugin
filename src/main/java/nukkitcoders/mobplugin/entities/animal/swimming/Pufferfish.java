@@ -5,6 +5,7 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.data.ByteEntityData;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
+import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
@@ -55,8 +56,10 @@ public class Pufferfish extends SwimmingAnimal {
     @Override
     public boolean attack(EntityDamageEvent ev) {
         super.attack(ev);
-
-        if (ev instanceof EntityDamageByEntityEvent) {
+        
+        if (ev.getCause() != DamageCause.ENTITY_ATTACK) return true;
+        
+        if (ev instanceof EntityDamageByEntityEvent) {            
             Entity damager = ((EntityDamageByEntityEvent) ev).getDamager();
             if (damager instanceof Player) {
                 if (this.puffed > 0) return true;
