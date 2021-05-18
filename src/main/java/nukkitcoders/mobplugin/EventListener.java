@@ -5,6 +5,7 @@ import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.entity.Entity;
+import cn.nukkit.entity.EntityCreature;
 import cn.nukkit.entity.projectile.EntityEgg;
 import cn.nukkit.entity.projectile.EntityEnderPearl;
 import cn.nukkit.event.EventHandler;
@@ -20,6 +21,7 @@ import cn.nukkit.event.player.PlayerMoveEvent;
 import cn.nukkit.event.server.DataPacketReceiveEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.enchantment.Enchantment;
+import cn.nukkit.lang.TranslationContainer;
 import cn.nukkit.level.Position;
 import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.BlockFace;
@@ -27,8 +29,11 @@ import cn.nukkit.math.SimpleAxisAlignedBB;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.network.protocol.EntityEventPacket;
 import cn.nukkit.network.protocol.PlayerInputPacket;
+import cn.nukkit.network.protocol.TextPacket;
+
 import nukkitcoders.mobplugin.entities.BaseEntity;
 import nukkitcoders.mobplugin.entities.HorseBase;
+import nukkitcoders.mobplugin.entities.Tameable;
 import nukkitcoders.mobplugin.entities.animal.walking.Chicken;
 import nukkitcoders.mobplugin.entities.animal.walking.Llama;
 import nukkitcoders.mobplugin.entities.animal.walking.Pig;
@@ -37,11 +42,13 @@ import nukkitcoders.mobplugin.entities.block.BlockEntitySpawner;
 import nukkitcoders.mobplugin.entities.monster.flying.Wither;
 import nukkitcoders.mobplugin.entities.monster.walking.Enderman;
 import nukkitcoders.mobplugin.entities.monster.walking.Silverfish;
+import nukkitcoders.mobplugin.entities.monster.walking.Wolf;
 import nukkitcoders.mobplugin.event.entity.SpawnGolemEvent;
 import nukkitcoders.mobplugin.event.entity.SpawnWitherEvent;
 import nukkitcoders.mobplugin.event.spawner.SpawnerChangeTypeEvent;
 import nukkitcoders.mobplugin.event.spawner.SpawnerCreateEvent;
 import nukkitcoders.mobplugin.utils.Utils;
+
 import org.apache.commons.math3.util.FastMath;
 
 import static nukkitcoders.mobplugin.entities.block.BlockEntitySpawner.*;
@@ -50,9 +57,22 @@ public class EventListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void EntityDeathEvent(EntityDeathEvent ev) {
-        if (!(ev.getEntity() instanceof BaseEntity)) return;
-        BaseEntity baseEntity = (BaseEntity) ev.getEntity();
+        if (!(ev.getEntity() instanceof EntityCreature)) return;
+        
+        EntityCreature entity = (EntityCreature) ev.getEntity();
+        
+        this.handleExperienceOrb(entity);
+        this.handleTamedEntityDeathMessage(entity);
+        this.handleAngryWolf(entity);
+    }
+    
+    public void handleExperienceOrb(EntityCreature entity) {
+        if (!(entity instanceof BaseEntity)) return;
+        
+        BaseEntity baseEntity = (BaseEntity) entity;
+        
         if (!(baseEntity.getLastDamageCause() instanceof EntityDamageByEntityEvent)) return;
+        
         Entity damager = ((EntityDamageByEntityEvent) baseEntity.getLastDamageCause()).getDamager();
         if (!(damager instanceof Player)) return;
         int killExperience = baseEntity.getKillExperience();
@@ -62,6 +82,57 @@ public class EventListener implements Listener {
             } else {
                 damager.getLevel().dropExpOrb(baseEntity, killExperience);
             }
+        }
+    }
+    
+    public void handleTamedEntityDeathMessage(EntityCreature entity) {
+        if (!(entity instanceof BaseEntity)) return;
+        
+        BaseEntity baseEntity = (BaseEntity) entity;
+        
+        if (baseEntity instanceof Tameable) {
+            if (!((Tameable) baseEntity).hasOwner()) {
+                return;
+            }
+            
+            if (((Tameable) baseEntity).getOwner() == null) {
+                return;
+            }
+            
+            // TODO: More detailed death messages
+            String killedEntity = "%entity.unknown.name";
+            if (baseEntity instanceof Wolf) {
+                killedEntity = "%entity.wolf.name";
+            } else {
+                killedEntity = baseEntity.getName();
+            }
+            
+            TranslationContainer deathMessage = new TranslationContainer("death.attack.generic", killedEntity);
+            if (baseEntity.getLastDamageCause() instanceof EntityDamageByEntityEvent) {
+                Entity damageEntity = ((EntityDamageByEntityEvent) baseEntity.getLastDamageCause()).getDamager();
+                if (damageEntity instanceof Player) {
+                    deathMessage = new TranslationContainer("death.attack.player", killedEntity, damageEntity.getName());
+                } else {
+                    deathMessage = new TranslationContainer("death.attack.mob", killedEntity, damageEntity.getName());
+                }
+            }
+            
+            TextPacket tameDeathMessage = new TextPacket();
+            tameDeathMessage.type = TextPacket.TYPE_TRANSLATION;
+            tameDeathMessage.message = deathMessage.getText();
+            tameDeathMessage.parameters = deathMessage.getParameters();
+            tameDeathMessage.isLocalized = true;
+            ((Tameable) baseEntity).getOwner().dataPacket(tameDeathMessage);
+        }
+    }
+    
+    public void handleAngryWolf(EntityCreature entity) {
+        if (!(entity.getLastDamageCause() instanceof EntityDamageByEntityEvent)) return;
+        
+        Entity damager = ((EntityDamageByEntityEvent) entity.getLastDamageCause()).getDamager();
+        if (damager instanceof Wolf) {
+            ((Wolf) damager).isAngryTo = -1L;
+            ((Wolf) damager).setAngry(false);
         }
     }
 
@@ -292,5 +363,31 @@ public class EventListener implements Listener {
             }
         }
     }
+    
+    @EventHandler
+    public void EntityDamageByEntityEvent(EntityDamageByEntityEvent ev) {
+        if (ev.getEntity() instanceof Player)  {
+            for (Entity entity : ev.getEntity().getLevel().getNearbyEntities(ev.getEntity().getBoundingBox().grow(17, 17, 17), ev.getEntity())) {
+                if (entity instanceof Wolf) {
+                    if (((Wolf) entity).hasOwner()) {
+                        ((Wolf) entity).isAngryTo = ev.getDamager().getId();
+                        ((Wolf) entity).setAngry(true);
+                    }
+                }
+            }
+        } else if (ev.getDamager() instanceof Player) {
+            for (Entity entity : ev.getDamager().getLevel().getNearbyEntities(ev.getDamager().getBoundingBox().grow(17, 17, 17), ev.getDamager())) {
+                if (entity.getId() == ev.getEntity().getId()) return;
+                
+                if (entity instanceof Wolf) {
+                    if (((Wolf) entity).hasOwner()) {
+                        if (((Wolf) entity).getOwner().equals((Player) ev.getDamager())) {
+                            ((Wolf) entity).isAngryTo = ev.getEntity().getId();
+                            ((Wolf) entity).setAngry(true);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
-
