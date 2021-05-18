@@ -17,7 +17,7 @@ public abstract class WalkingMonster extends WalkingEntity implements Monster {
 
     protected boolean canAttack = true;
 
-    public long isAngryTo;
+    public long isAngryTo = -1L;
 
     public WalkingMonster(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
