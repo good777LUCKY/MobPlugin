@@ -47,18 +47,18 @@ public abstract class TameableMonster extends WalkingMonster implements Tameable
         if (this.owner != null) {
             namedTag.putString(NAMED_TAG_OWNER, this.owner.getName());
             namedTag.putString(NAMED_TAG_OWNER_UUID, owner.getUniqueId().toString());
-        } else {
-            namedTag.putString(NAMED_TAG_OWNER, "");
-            namedTag.putString(NAMED_TAG_OWNER_UUID, "");
         }
     }
 
     @Override
     public Player getOwner() {
+        this.checkOwner();
         return this.owner;
     }
 
+    @Override
     public boolean hasOwner() {
+        this.checkOwner();
         return this.owner != null;
     }
 
@@ -104,5 +104,20 @@ public abstract class TameableMonster extends WalkingMonster implements Tameable
         }
 
         return super.updateMove(tickDiff);
+    }
+    
+    /**
+      * If the owner is online, set owner properly
+      */
+    public void checkOwner() {
+        if (this.owner == null && this.namedTag != null) {
+            String ownerName = namedTag.getString(NAMED_TAG_OWNER);
+            if (ownerName != null && ownerName.length() > 0) {
+                Player player = Server.getInstance().getPlayer(ownerName);
+                if (player != null) {
+                    this.setOwner(player);
+                }
+            }
+        }
     }
 }
