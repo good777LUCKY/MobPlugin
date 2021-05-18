@@ -26,4 +26,4 @@ jobs:
         if: success()
         with:
           name: MobPlugin
-          path: target/MobPlugin-*.jar
+          path: target/MobPlugin-1.19.0.jar
