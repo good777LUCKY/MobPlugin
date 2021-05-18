@@ -25,5 +25,5 @@ jobs:
         uses: actions/upload-artifact@v1
         if: success()
         with:
-          name: DbLib
-          path: target/MobPlugin*.jar
+          name: MobPlugin
+          path: target/MobPlugin-*.jar
