@@ -169,7 +169,7 @@ public class Wolf extends TameableMonster {
         if (item.getId() == ItemID.BONE) {
             if (!this.hasOwner() && !this.isAngry()) {
                 player.getInventory().decreaseCount(player.getInventory().getHeldItemIndex());
-                if (Utils.rand(1, 3) == 3 || player.isCreative()) {
+                if (Utils.rand(1, 3) == 3) {
                     EntityEventPacket packet = new EntityEventPacket();
                     packet.eid = this.getId();
                     packet.event = EntityEventPacket.TAME_SUCCESS;
