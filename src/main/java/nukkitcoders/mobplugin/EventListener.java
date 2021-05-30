@@ -41,6 +41,7 @@ import nukkitcoders.mobplugin.entities.animal.walking.Strider;
 import nukkitcoders.mobplugin.entities.block.BlockEntitySpawner;
 import nukkitcoders.mobplugin.entities.monster.flying.Wither;
 import nukkitcoders.mobplugin.entities.monster.walking.Enderman;
+import nukkitcoders.mobplugin.entities.monster.walking.IronGolem;
 import nukkitcoders.mobplugin.entities.monster.walking.Silverfish;
 import nukkitcoders.mobplugin.entities.monster.walking.Wolf;
 import nukkitcoders.mobplugin.event.entity.SpawnGolemEvent;
@@ -63,10 +64,10 @@ public class EventListener implements Listener {
         
         this.handleExperienceOrb(entity);
         this.handleTamedEntityDeathMessage(entity);
-        this.handleAngryWolf(entity);
+        this.handleAttackedEntityAngry(entity);
     }
     
-    public void handleExperienceOrb(EntityCreature entity) {
+    private void handleExperienceOrb(EntityCreature entity) {
         if (!(entity instanceof BaseEntity)) return;
         
         BaseEntity baseEntity = (BaseEntity) entity;
@@ -85,7 +86,7 @@ public class EventListener implements Listener {
         }
     }
     
-    public void handleTamedEntityDeathMessage(EntityCreature entity) {
+    private void handleTamedEntityDeathMessage(EntityCreature entity) {
         if (!(entity instanceof BaseEntity)) return;
         
         BaseEntity baseEntity = (BaseEntity) entity;
@@ -126,11 +127,11 @@ public class EventListener implements Listener {
         }
     }
     
-    public void handleAngryWolf(EntityCreature entity) {
+    private void handleAttackedEntityAngry(EntityCreature entity) {
         if (!(entity.getLastDamageCause() instanceof EntityDamageByEntityEvent)) return;
         
         Entity damager = ((EntityDamageByEntityEvent) entity.getLastDamageCause()).getDamager();
-        if (damager instanceof Wolf) {
+        if (damager instanceof Wolf || damager instanceof IronGolem) { // TODO: Improve Iron Golem check
             ((Wolf) damager).isAngryTo = -1L;
             ((Wolf) damager).setAngry(false);
         }
@@ -364,7 +365,7 @@ public class EventListener implements Listener {
         }
     }
     
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void EntityDamageByEntityEvent(EntityDamageByEntityEvent ev) {
         if (ev.getEntity() instanceof Player)  {
             for (Entity entity : ev.getEntity().getLevel().getNearbyEntities(ev.getEntity().getBoundingBox().grow(17, 17, 17), ev.getEntity())) {
