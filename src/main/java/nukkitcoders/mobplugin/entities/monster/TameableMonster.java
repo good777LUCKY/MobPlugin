@@ -57,8 +57,22 @@ public abstract class TameableMonster extends WalkingMonster implements Tameable
 
     @Override
     public boolean hasOwner() {
-        this.checkOwner();
-        return this.owner != null;
+        return hasOwner(true);
+    }
+    
+    public boolean hasOwner(boolean checkOnline) {
+        if (checkOnline) {
+            this.checkOwner();
+            return this.owner != null;
+        } else {
+            if (this.namedTag != null) {
+                String ownerName = namedTag.getString(NAMED_TAG_OWNER);
+                if (ownerName != null && ownerName.length() > 0) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     public void setOwner(Player player) {
