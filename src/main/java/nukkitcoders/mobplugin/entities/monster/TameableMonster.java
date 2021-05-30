@@ -1,7 +1,6 @@
 package nukkitcoders.mobplugin.entities.monster;
 
 import cn.nukkit.Player;
-import cn.nukkit.Server;
 import cn.nukkit.entity.data.LongEntityData;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.math.Vector3;
@@ -30,7 +29,7 @@ public abstract class TameableMonster extends WalkingMonster implements Tameable
         if (this.namedTag != null) {
             String ownerName = namedTag.getString(NAMED_TAG_OWNER);
             if (ownerName != null && ownerName.length() > 0) {
-                Player player = Server.getInstance().getPlayer(ownerName);
+                Player player = this.getServer().getPlayerExact(ownerName);
                 if (player != null) {
                     this.setOwner(player);
                 }
@@ -113,7 +112,7 @@ public abstract class TameableMonster extends WalkingMonster implements Tameable
         if (this.owner == null && this.namedTag != null) {
             String ownerName = namedTag.getString(NAMED_TAG_OWNER);
             if (ownerName != null && ownerName.length() > 0) {
-                Player player = Server.getInstance().getPlayer(ownerName);
+                Player player = this.getServer().getPlayerExact(ownerName);
                 if (player != null) {
                     this.setOwner(player);
                 }
