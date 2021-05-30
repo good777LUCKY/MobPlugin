@@ -12,6 +12,7 @@ public class Config {
     public boolean noSpawnEggWasting;
     public boolean killOnDespawn;
     public boolean spawnersEnabled;
+    public boolean checkTamedEntityAttack;
 
     Config(MobPlugin plugin) {
         plugin.saveDefaultConfig();
@@ -19,10 +20,12 @@ public class Config {
     }
 
     boolean init(MobPlugin plugin) {
-        int ver = 14;
+        int ver = 15;
 
         if (pluginConfig.getInt("config-version") != ver) {
-            if (pluginConfig.getInt("config-version") == 13) {
+            if (pluginConfig.getInt("config-version") == 14) {
+                pluginConfig.set("other.check-tamed-entity-attack", true);
+            } else if (pluginConfig.getInt("config-version") == 13) {
                 pluginConfig.set("autospawn.piglin", 0);
             } else if (pluginConfig.getInt("config-version") == 12) {
                 pluginConfig.set("autospawn.fox", 0);
@@ -73,6 +76,8 @@ public class Config {
         killOnDespawn = pluginConfig.getBoolean("other.kill-mobs-on-despawn");
         endEndermanSpawnRate = pluginConfig.getInt("other.end-enderman-spawning");
         spawnersEnabled = pluginConfig.getBoolean("other.spawners-enabled");
+        checkTamedEntityAttack = pluginConfig.getBoolean("other.check-tamed-entity-attack");
+        
         return true;
     }
 }
