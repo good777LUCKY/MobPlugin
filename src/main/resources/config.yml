@@ -1,5 +1,5 @@
 # config version, do not edit!
-config-version: 14
+config-version: 15
 
 entities:
   # how often the spawn task should run
@@ -71,3 +71,5 @@ other:
   spawners-enabled: true
   # custom enderman max spawns rule for the end world
   end-enderman-spawning: 10
+  # if tamed entity owner attacked or attack entity, it will be angry
+  check-tamed-entity-attack: true
