@@ -367,6 +367,10 @@ public class EventListener implements Listener {
     
     @EventHandler(ignoreCancelled = true)
     public void EntityDamageByEntityEvent(EntityDamageByEntityEvent ev) {
+        if (!MobPlugin.getInstance().config.checkTamedEntityAttack) {
+            return;
+        }
+        
         if (ev.getEntity() instanceof Player)  {
             for (Entity entity : ev.getEntity().getLevel().getNearbyEntities(ev.getEntity().getBoundingBox().grow(17, 17, 17), ev.getEntity())) {
                 if (entity instanceof Wolf) {
