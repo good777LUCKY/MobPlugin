@@ -261,7 +261,7 @@ public class Wolf extends TameableMonster {
                         (float) (damage.getOrDefault(EntityDamageEvent.DamageModifier.ARMOR, 0f) - Math.floor(damage.getOrDefault(EntityDamageEvent.DamageModifier.BASE, 1f) * points * 0.04)));
             }
             
-            this.setMotion(tempVector.setComponents(0, this.getGravity() * 6, 0));
+            this.setMotion(tempVector.setComponents(0, this.getGravity() * 6, 0)); // TODO: Jump before attack
             
             entity.attack(new EntityDamageByEntityEvent(this, entity, EntityDamageEvent.DamageCause.ENTITY_ATTACK, damage));
         }
@@ -396,7 +396,7 @@ public class Wolf extends TameableMonster {
     
     @Override
     public boolean canDespawn() {
-        return false;
+        return !this.hasOwner(false);
     }
     
     public boolean isBeggingItem(Item item) {
