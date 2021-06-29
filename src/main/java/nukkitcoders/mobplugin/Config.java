@@ -32,6 +32,7 @@ public class Config {
                 pluginConfig.set("autospawn.panda", 0);
                 pluginConfig.set("autospawn.drowned", 0);
                 pluginConfig.set("autospawn.piglin", 0);
+                pluginConfig.set("other.check-tamed-entity-attack", true);
             } else if (pluginConfig.getInt("config-version") == 11) {
                 pluginConfig.set("other.spawners-enabled", true);
                 pluginConfig.set("other.end-enderman-spawning", 10);
@@ -39,6 +40,7 @@ public class Config {
                 pluginConfig.set("autospawn.panda", 0);
                 pluginConfig.set("autospawn.drowned", 0);
                 pluginConfig.set("autospawn.piglin", 0);
+                pluginConfig.set("other.check-tamed-entity-attack", true);
             } else if (pluginConfig.getInt("config-version") == 10) {
                 pluginConfig.set("other.kill-mobs-on-despawn", false);
                 pluginConfig.set("other.spawners-enabled", true);
@@ -47,6 +49,7 @@ public class Config {
                 pluginConfig.set("autospawn.panda", 0);
                 pluginConfig.set("autospawn.drowned", 0);
                 pluginConfig.set("autospawn.piglin", 0);
+                pluginConfig.set("other.check-tamed-entity-attack", true);
             } else if (pluginConfig.getInt("config-version") == 9) {
                 pluginConfig.set("other.spawn-no-spawning-area", -1);
                 pluginConfig.set("other.kill-mobs-on-despawn", false);
@@ -56,6 +59,7 @@ public class Config {
                 pluginConfig.set("autospawn.panda", 0);
                 pluginConfig.set("autospawn.drowned", 0);
                 pluginConfig.set("autospawn.piglin", 0);
+                pluginConfig.set("other.check-tamed-entity-attack", true);
             } else {
                 plugin.getLogger().warning("MobPlugin's config file is outdated. Please delete the old config.");
                 plugin.getLogger().error("Config error. The plugin will be disabled.");
@@ -77,7 +81,6 @@ public class Config {
         endEndermanSpawnRate = pluginConfig.getInt("other.end-enderman-spawning");
         spawnersEnabled = pluginConfig.getBoolean("other.spawners-enabled");
         checkTamedEntityAttack = pluginConfig.getBoolean("other.check-tamed-entity-attack");
-        
         return true;
     }
 }

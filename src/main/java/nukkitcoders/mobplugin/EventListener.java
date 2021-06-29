@@ -16,6 +16,7 @@ import cn.nukkit.event.block.BlockPlaceEvent;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDeathEvent;
 import cn.nukkit.event.entity.ProjectileHitEvent;
+import cn.nukkit.event.player.PlayerDeathEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.event.player.PlayerMoveEvent;
 import cn.nukkit.event.server.DataPacketReceiveEvent;
@@ -39,11 +40,9 @@ import nukkitcoders.mobplugin.entities.animal.walking.Llama;
 import nukkitcoders.mobplugin.entities.animal.walking.Pig;
 import nukkitcoders.mobplugin.entities.animal.walking.Strider;
 import nukkitcoders.mobplugin.entities.block.BlockEntitySpawner;
+import nukkitcoders.mobplugin.entities.monster.WalkingMonster;
 import nukkitcoders.mobplugin.entities.monster.flying.Wither;
-import nukkitcoders.mobplugin.entities.monster.walking.Enderman;
-import nukkitcoders.mobplugin.entities.monster.walking.IronGolem;
-import nukkitcoders.mobplugin.entities.monster.walking.Silverfish;
-import nukkitcoders.mobplugin.entities.monster.walking.Wolf;
+import nukkitcoders.mobplugin.entities.monster.walking.*;
 import nukkitcoders.mobplugin.event.entity.SpawnGolemEvent;
 import nukkitcoders.mobplugin.event.entity.SpawnWitherEvent;
 import nukkitcoders.mobplugin.event.spawner.SpawnerChangeTypeEvent;
@@ -58,16 +57,19 @@ public class EventListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void EntityDeathEvent(EntityDeathEvent ev) {
-        if (!(ev.getEntity() instanceof EntityCreature)) return;
-        
-        EntityCreature entity = (EntityCreature) ev.getEntity();
-        
-        this.handleExperienceOrb(entity);
-        this.handleTamedEntityDeathMessage(entity);
-        this.handleAttackedEntityAngry(entity);
+        if (ev.getEntity() instanceof EntityCreature) {
+            this.handleExperienceOrb(ev.getEntity());
+            this.handleTamedEntityDeathMessage(ev.getEntity());
+            this.handleAttackedEntityAngry(ev.getEntity());
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void PlayerDeathEvent(PlayerDeathEvent ev) {
+        this.handleAttackedEntityAngry(ev.getEntity());
     }
     
-    private void handleExperienceOrb(EntityCreature entity) {
+    private void handleExperienceOrb(Entity entity) {
         if (!(entity instanceof BaseEntity)) return;
         
         BaseEntity baseEntity = (BaseEntity) entity;
@@ -86,7 +88,7 @@ public class EventListener implements Listener {
         }
     }
     
-    private void handleTamedEntityDeathMessage(EntityCreature entity) {
+    private void handleTamedEntityDeathMessage(Entity entity) {
         if (!(entity instanceof BaseEntity)) return;
         
         BaseEntity baseEntity = (BaseEntity) entity;
@@ -101,7 +103,7 @@ public class EventListener implements Listener {
             }
             
             // TODO: More detailed death messages
-            String killedEntity = "%entity.unknown.name";
+            String killedEntity;
             if (baseEntity instanceof Wolf) {
                 killedEntity = "%entity.wolf.name";
             } else {
@@ -126,14 +128,16 @@ public class EventListener implements Listener {
             ((Tameable) baseEntity).getOwner().dataPacket(tameDeathMessage);
         }
     }
-    
-    private void handleAttackedEntityAngry(EntityCreature entity) {
+
+    private void handleAttackedEntityAngry(Entity entity) {
         if (!(entity.getLastDamageCause() instanceof EntityDamageByEntityEvent)) return;
-        
+
         Entity damager = ((EntityDamageByEntityEvent) entity.getLastDamageCause()).getDamager();
-        if (damager instanceof Wolf || damager instanceof IronGolem) { // TODO: Improve Iron Golem check
+        if (damager instanceof Wolf) {
             ((Wolf) damager).isAngryTo = -1L;
             ((Wolf) damager).setAngry(false);
+        } else if (damager instanceof IronGolem || damager instanceof SnowGolem) {
+            ((WalkingMonster) damager).isAngryTo = -1L;
         }
     }
 

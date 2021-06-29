@@ -28,7 +28,7 @@ public abstract class TameableMonster extends WalkingMonster implements Tameable
 
         if (this.namedTag != null) {
             String ownerName = namedTag.getString(NAMED_TAG_OWNER);
-            if (ownerName != null && ownerName.length() > 0) {
+            if (ownerName != null && !ownerName.isEmpty()) {
                 Player player = this.getServer().getPlayerExact(ownerName);
                 if (player != null) {
                     this.setOwner(player);
@@ -67,9 +67,7 @@ public abstract class TameableMonster extends WalkingMonster implements Tameable
         } else {
             if (this.namedTag != null) {
                 String ownerName = namedTag.getString(NAMED_TAG_OWNER);
-                if (ownerName != null && ownerName.length() > 0) {
-                    return true;
-                }
+                return ownerName != null && !ownerName.isEmpty();
             }
             return false;
         }
@@ -83,7 +81,8 @@ public abstract class TameableMonster extends WalkingMonster implements Tameable
 
     @Override
     public String getName() {
-        return this.getNameTag();
+        String name = this.getNameTag();
+        return name.isEmpty() ? super.getName() : name;
     }
 
     public boolean isSitting() {
@@ -125,7 +124,7 @@ public abstract class TameableMonster extends WalkingMonster implements Tameable
     public void checkOwner() {
         if (this.owner == null && this.namedTag != null) {
             String ownerName = namedTag.getString(NAMED_TAG_OWNER);
-            if (ownerName != null && ownerName.length() > 0) {
+            if (ownerName != null && !ownerName.isEmpty()) {
                 Player player = this.getServer().getPlayerExact(ownerName);
                 if (player != null) {
                     this.setOwner(player);

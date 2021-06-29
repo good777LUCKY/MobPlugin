@@ -1,6 +1,7 @@
 package nukkitcoders.mobplugin.entities.monster.walking;
 
 import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.EntityCreature;
 import cn.nukkit.entity.data.IntEntityData;
@@ -18,7 +19,6 @@ import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.network.protocol.EntityEventPacket;
 import cn.nukkit.utils.DyeColor;
 
-import nukkitcoders.mobplugin.entities.BaseEntity;
 import nukkitcoders.mobplugin.entities.animal.jumping.Rabbit;
 import nukkitcoders.mobplugin.entities.animal.swimming.Turtle;
 import nukkitcoders.mobplugin.entities.animal.walking.Fox;
@@ -49,7 +49,7 @@ public class Wolf extends TameableMonster {
     
     private int afterInWater = -1;
     
-    private Vector3 tempVector = new Vector3();
+    private final Vector3 tempVector = new Vector3();
 
     public Wolf(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
@@ -300,7 +300,7 @@ public class Wolf extends TameableMonster {
             EntityEventPacket packet = new EntityEventPacket();
             packet.eid = this.getId();
             packet.event = EntityEventPacket.SHAKE_WET;
-            this.getServer().broadcastPacket(this.getViewers().values(), packet);
+            Server.broadcastPacket(this.getViewers().values(), packet);
         }
         
         return hasUpdate;
@@ -396,7 +396,8 @@ public class Wolf extends TameableMonster {
     
     @Override
     public boolean canDespawn() {
-        return !this.hasOwner(false);
+        if (this.hasOwner(false)) return false;
+        return super.canDespawn();
     }
     
     public boolean isBeggingItem(Item item) {
@@ -430,26 +431,34 @@ public class Wolf extends TameableMonster {
     
     public int getHealableItem(Item item) {
         switch (item.getId()) {
-            case ItemID.RAW_PORKCHOP: return 3;
-            case ItemID.COOKED_PORKCHOP: return 8;
-            case ItemID.RAW_FISH: return 2;
-            case ItemID.RAW_SALMON: return 2;
-            case ItemID.CLOWNFISH: return 1;
-            case ItemID.PUFFERFISH: return 1;
-            case ItemID.COOKED_FISH: return 5;
-            case ItemID.COOKED_SALMON: return 6;
-            case ItemID.RAW_BEEF: return 3;
-            case ItemID.COOKED_BEEF: return 8;
-            case ItemID.RAW_CHICKEN: return 2;
-            case ItemID.COOKED_CHICKEN: return 6;
-            case ItemID.RAW_MUTTON: return 2;
-            case ItemID.COOKED_MUTTON: return 6;
-            case ItemID.ROTTEN_FLESH: return 4;
-            case ItemID.RAW_RABBIT: return 3;
-            case ItemID.COOKED_RABBIT: return 5;
-            case ItemID.RABBIT_STEW: return 10;
-            
-            default: return 0;
+            case ItemID.RAW_PORKCHOP:
+            case ItemID.RAW_BEEF:
+            case ItemID.RAW_RABBIT:
+                return 3;
+            case ItemID.COOKED_PORKCHOP:
+            case ItemID.COOKED_BEEF:
+                return 8;
+            case ItemID.RAW_FISH:
+            case ItemID.RAW_SALMON:
+            case ItemID.RAW_CHICKEN:
+            case ItemID.RAW_MUTTON:
+                return 2;
+            case ItemID.CLOWNFISH:
+            case ItemID.PUFFERFISH:
+                return 1;
+            case ItemID.COOKED_FISH:
+            case ItemID.COOKED_RABBIT:
+                return 5;
+            case ItemID.COOKED_SALMON:
+            case ItemID.COOKED_CHICKEN:
+            case ItemID.COOKED_MUTTON:
+                return 6;
+            case ItemID.ROTTEN_FLESH:
+                return 4;
+            case ItemID.RABBIT_STEW:
+                return 10;
+            default:
+                return 0;
         }
     }
 }
